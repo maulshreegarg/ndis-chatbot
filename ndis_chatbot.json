@@ -1,0 +1,263 @@
+{
+  "name": "ndis chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nMy name is livablecare chatbot. How can I assist you today?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c120dffb-e594-4a81-86a0-c59dbf53fd22",
+      "name": "When chat message received",
+      "webhookId": "10cb9efc-39f7-43cb-90b5-83768868fb97"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful assistant that helps the user with faq based questions and answers about the NDIS australian disability fund and Livablecare a ndis provider using tools such as the website text of livable care , the website from livable care , the website from ndis , the excel sheet with ndis codes. your language is elegant and formal and you ignore irrelevant questions and reply with that isnt within the scope of my purpose."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        492,
+        0
+      ],
+      "id": "8f1e008c-64f5-419e-8fb9-e0dc578b439b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        220
+      ],
+      "id": "da928eba-c0d5-4545-a281-369f2a64d105",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "y9KgA7SQX1ZKg3u7",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        340,
+        220
+      ],
+      "id": "639ac41b-8414-4b76-aa1e-a41d6d34ff0e",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        460,
+        220
+      ],
+      "id": "7e880ffd-d47c-4312-881f-3e8924caf4fe",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "n5Jdc1INNAWOKA9h",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "get information from the website of livablecare",
+        "url": "https://userway.org/?utm_source=easyread-9550.myshopify.com&utm_medium=widget_footer&utm_campaign=free_widget"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        580,
+        220
+      ],
+      "id": "c27ff375-d959-4476-affc-52aeeddec3ac",
+      "name": "livablecare website"
+    },
+    {
+      "parameters": {
+        "toolDescription": "get information about livablecare from their website text ",
+        "url": "https://docs.google.com/document/d/1IOiFlpk-Z0zadXZlLO5Cq1WHtpVLzGqE/edit?usp=drive_link&ouid=111041188719575175448&rtpof=true&sd=true"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        220
+      ],
+      "id": "703071b6-3672-4a0e-bccb-cf7551ffa3c5",
+      "name": "livablecare website txt"
+    },
+    {
+      "parameters": {
+        "toolDescription": "get information about ndis from the ndis website ",
+        "url": "https://www.ndis.gov.au/"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        820,
+        220
+      ],
+      "id": "850f508b-6111-4b44-a548-67df9605937a",
+      "name": "ndis"
+    },
+    {
+      "parameters": {
+        "resource": "worksheet",
+        "workbook": {
+          "__rl": true,
+          "value": "01GWMPMTUG2SARPZ6U5FD3IMBS4FBPJDXB",
+          "mode": "list",
+          "cachedResultName": "PB NDIS Support Catalogue 2022-23 ",
+          "cachedResultUrl": "https://automatesagency-my.sharepoint.com/personal/tina_automates_agency/_layouts/15/Doc.aspx?sourcedoc=%7B1781D486-D4E7-47E9-B430-32E142F48EE1%7D&file=PB%20NDIS%20Support%20Catalogue%202022-23%20.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1"
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.microsoftExcelTool",
+      "typeVersion": 2.1,
+      "position": [
+        940,
+        220
+      ],
+      "id": "1b40b433-9af0-4737-b8ac-7b5dd1c15533",
+      "name": "Microsoft Excel 365",
+      "credentials": {
+        "microsoftExcelOAuth2Api": {
+          "id": "dsqtRjm0L5LK15Nv",
+          "name": "Microsoft Excel account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "livablecare website": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "livablecare website txt": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ndis": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Microsoft Excel 365": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a4b41ffb-186c-4882-9d81-fd97440a2a90",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9ea559331e3afda4f15c2e04e8ead3317efa57c5b8ab2ddc0533f97927ceb471"
+  },
+  "id": "6DEvM8Eq0lDbjusn",
+  "tags": []
+}
